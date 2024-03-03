@@ -1,43 +1,20 @@
-// we separate the routes and then use them in the main server.js app
 const express = require('express')
-const router = express.Router() //we use the express router because we don't have access to the app instance in this filek
+const router = express.Router()
+const path = require('path')
 
-// get the schema
-const Item = require('./../schema/item')
-
-// all routes
-
-// at what endpoint are we hitting mongodb??
-router.get('/', async (req, res) => {
-	try {
-		const response = await Item.find()
-		res.status(200).json(response)
-	} catch (error) {
-		res.status(500).json({ err: error })
-	}
-	// res.sendFile(path.join(__dirname, '..', 'index.html'))
+router.get('/', (_, res) => {
+	res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
 })
-
-router.post('/', async (req, res) => {
-	const { name, quantity, price } = req.body
-
-	const newItem = new Item({
-		name,
-		quantity,
-		price,
-	})
-
-	try {
-		// const response = await newItem.save({isNew: true})
-		const response = await newItem.save()
-		res.status(201).json(response)
-	} catch (error) {
-		res.status(400).json({ err: error })
-	}
-	// res.sendFile(path.join(__dirname, '..', 'index.html'))
+router.get('/items', (req, res) => {
+	res.status(200).send(`<h1>Items home</h1>`)
 })
-// router.post
-// router.patch
-// router.delete
+router.get('/items/:id', (req, res) => {
+	const id = req.params.id
+	res.status(200).send(`<h1>Item #${id}</h1>`)
+})
+router.get('*', (req, res) => {
+	const id = req.params.id
+	res.status(200).send(`<h1>404 Not found</h1>`)
+})
 
 module.exports = router

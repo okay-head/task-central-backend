@@ -1,6 +1,15 @@
 const express = require('express')
 const app = express()
 require('dotenv').config() //load all env variable from .env
+const cors = require('cors')
+
+app.use(
+	cors({
+		origin: 'http://localhost:5173/',
+		methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+		allowedHeaders: ['Content-Type'],
+	})
+)
 
 // parse incoming req body as json
 app.use(express.json())

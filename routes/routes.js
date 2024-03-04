@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const router = express.Router()
 const {
@@ -9,6 +10,9 @@ const {
 	deleteFn,
 } = require('./../controllers/controller')
 
+router.get('/', (_, res) => {
+	res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
+})
 // GET
 router.get('/items', getAllFn)
 router.get('/items/:id', getOneFn)

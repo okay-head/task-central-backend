@@ -14,7 +14,7 @@ const mongoose = require('mongoose')
 
 mongoose
 	.connect(process.env.CONNECTION_STRING)
-	.then(() => {
+	.then((db) => {
 		console.log('Connected to mongoDB! 💾\n')
 
 		// the server starts on an endpoint, iff connection to db is successful

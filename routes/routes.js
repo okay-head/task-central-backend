@@ -1,20 +1,30 @@
 const express = require('express')
 const router = express.Router()
-const path = require('path')
+const {
+	postFn,
+	getAllFn,
+	findNextId,
+	getOneFn,
+	patchFn,
+	deleteFn,
+} = require('./../controllers/controller')
 
-router.get('/', (_, res) => {
-	res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
-})
-router.get('/items', (req, res) => {
-	res.status(200).send(`<h1>Items home</h1>`)
-})
-router.get('/items/:id', (req, res) => {
-	const id = req.params.id
-	res.status(200).send(`<h1>Item #${id}</h1>`)
-})
-router.get('*', (req, res) => {
-	const id = req.params.id
-	res.status(200).send(`<h1>404 Not found</h1>`)
-})
+// GET
+router.get('/items', getAllFn)
+router.get('/items/:id', getOneFn)
+router.get('/items/next', findNextId)
 
+// POST
+router.post('/items', postFn)
+
+// PATCH
+router.patch('/items/:id', patchFn)
+
+// DELETE
+router.delete('/items/:id', deleteFn)
+
+// NOT FOUND
+router.get('*', (_, res) => {
+	res.status(404).send({ error: '404 Not found' })
+})
 module.exports = router

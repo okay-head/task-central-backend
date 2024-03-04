@@ -1,6 +1,7 @@
-// now we need to create a schema with the help of kaala mongoose
+// create a SCHEMA with the help of kaala mongoose
 const mongoose = require('mongoose')
 
+// create a MODEL that can interact w the collection in db
 const itemSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
@@ -10,5 +11,4 @@ const itemSchema = new mongoose.Schema(
 	{ timestamps: true }
 )
 
-// 1st arg is the name of the collection
 module.exports = mongoose.model('Item', itemSchema)

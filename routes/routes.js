@@ -27,4 +27,5 @@ router.delete('/items/:id', deleteFn)
 router.get('*', (_, res) => {
 	res.status(404).send({ error: '404 Not found' })
 })
+
 module.exports = router

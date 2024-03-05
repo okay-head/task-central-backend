@@ -1,4 +1,4 @@
-const Item = require('../model/item')
+const Task = require('../model/Task')
 /* 
   countDocuments() not working
   mongoose.Types.ObjectId.isValid(id)
@@ -9,7 +9,7 @@ const Item = require('../model/item')
 const getOneFn = async (req, res) => {
 	try {
 		const { id } = req.params
-		const response = await Item.findOne({ _id: id })
+		const response = await Task.findOne({ _id: id })
 		return res.status(200).json(response)
 	} catch (error) {
 		res.status(400).json({ error })
@@ -17,7 +17,7 @@ const getOneFn = async (req, res) => {
 }
 const getAllFn = async (req, res) => {
 	try {
-		const response = await Item.find().sort({ createdAt: -1 })
+		const response = await Task.find().sort({ createdAt: -1 })
 		return res.send(response)
 	} catch (error) {
 		res.status(404).json({ error: 'Resource Not found' })
@@ -25,7 +25,7 @@ const getAllFn = async (req, res) => {
 }
 const findNextId = async (req, res) => {
 	try {
-		const response = await Item.find()
+		const response = await Task.find()
 		const nextId = response.length + 1
 		return res.json({ nextId })
 	} catch (error) {
@@ -35,11 +35,11 @@ const findNextId = async (req, res) => {
 
 // POST
 const postFn = async (req, res) => {
-	const { name, quantity, price } = req.body
+	const { title, description } = req.body
 	//  [ IMPROVEMENT ]
 	// we need a zod schema validation mechanism here, before it hits the DB
 	try {
-		const response = await Item.create({ name, quantity, price })
+		const response = await Task.create({ title, description })
 		return res.status(201).json(response)
 	} catch (err) {
 		res.status(400).json({ error: err.message })
@@ -53,11 +53,11 @@ const patchFn = async (req, res) => {
 	const id = req.params.id
 	try {
 		// first check if the resource exists
-		const exists = await Item.exists({ _id: id })
-		if (!exists) throw new Error('Item is not present')
+		const exists = await Task.exists({ _id: id })
+		if (!exists) throw new Error('Task is not present')
 
 		// else perform the update
-		const response = await Item.updateOne({ _id: id }, payload)
+		const response = await Task.updateOne({ _id: id }, payload)
 		return res.json(response)
 	} catch (err) {
 		res.status(400).json({ error: err.message })
@@ -69,11 +69,11 @@ const deleteFn = async (req, res) => {
 	const id = req.params.id
 	try {
 		// first check if the resource exists
-		const exists = await Item.exists({ _id: id })
-		if (!exists) throw new Error('Item is not present')
+		const exists = await Task.exists({ _id: id })
+		if (!exists) throw new Error('Task is not present')
 
 		// else perform delete
-		const response = await Item.deleteOne({ _id: id })
+		const response = await Task.deleteOne({ _id: id })
 		return res.json(response)
 	} catch (err) {
 		res.status(500).json({ error: err.message })

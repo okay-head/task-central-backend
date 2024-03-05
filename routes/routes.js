@@ -14,18 +14,18 @@ router.get('/', (_, res) => {
 	res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
 })
 // GET
-router.get('/items', getAllFn)
-router.get('/items/:id', getOneFn)
-router.get('/items/next', findNextId)
+router.get('/tasks', getAllFn)
+router.get('/tasks/:id', getOneFn)
+router.get('/tasks/next', findNextId)
 
 // POST
-router.post('/items', postFn)
+router.post('/tasks', postFn)
 
 // PATCH
-router.patch('/items/:id', patchFn)
+router.patch('/tasks/:id', patchFn)
 
 // DELETE
-router.delete('/items/:id', deleteFn)
+router.delete('/tasks/:id', deleteFn)
 
 // NOT FOUND
 router.get('*', (_, res) => {

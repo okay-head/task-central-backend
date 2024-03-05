@@ -5,7 +5,8 @@ const cors = require('cors')
 
 app.use(
 	cors({
-		origin: 'http://localhost:5173/',
+		// origin: ['http://localhost:5173/', 'https://taskcentral.netlify.app/'],
+		origin: '*',
 		methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 		allowedHeaders: ['Content-Type'],
 	})

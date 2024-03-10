@@ -1,7 +1,7 @@
 {
-	"name": "express-backend-scratch",
+	"name": "taskcentral-backend",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Backend for the app Task Central",
 	"main": "server.js",
 	"scripts": {
 		"start": "nodemon server.js"

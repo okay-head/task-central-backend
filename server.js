@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-require('dotenv').config() //load all env variable from .env
+require('dotenv').config()
 const cors = require('cors')
 
 app.use(
@@ -12,25 +12,27 @@ app.use(
 	})
 )
 
-// parse incoming req body as json
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // -- routes --
-const routes = require('./routes/routes')
-app.use(routes)
+const tasks = require('./routes/task.route.js')
+const home = require('./routes/home.route.js')
+app.use('/tasks', tasks)
+app.use('/', home)
 
 // -- connect to MONGO --
 const mongoose = require('mongoose')
 
 mongoose
 	.connect(process.env.CONNECTION_STRING)
-	.then((db) => {
+	.then(() => {
 		console.log('Connected to mongoDB! 💾\n')
 
 		// the server starts on an endpoint, iff connection to db is successful
-		const PORT = process.env.PORT
-		app.listen(PORT, () => {
-			console.log('server running at port: ' + PORT)
+		const port = process.env.PORT
+		app.listen(port, () => {
+			console.log('server running at port: ' + port)
 		})
 	})
 	.catch((err) =>

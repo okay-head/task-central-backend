@@ -6,30 +6,26 @@ const Task = require('../model/task.model')
  */
 
 // GET
-const getOneFn = async (req, res) => {
-	try {
-		const { id } = req.params
-		const response = await Task.findOne({ _id: id })
-		return res.status(200).json(response)
-	} catch (error) {
-		res.status(400).json({ error })
-	}
-}
-const getAllFn = async (req, res) => {
+
+const getAllFn = async (_, res) => {
 	try {
 		const response = await Task.find().sort({ createdAt: -1 })
-		return res.send(response)
+		res.status(200).json(response)
 	} catch (error) {
-		res.status(404).json({ error: 'Resource Not found' })
+		const errMsg = error?.message || 'error'
+		res.status(404).json({ message: errMsg })
 	}
 }
-const findNextId = async (req, res) => {
+
+const getOneFn = async (req, res) => {
 	try {
-		const response = await Task.find()
-		const nextId = response.length + 1
-		return res.json({ nextId })
+		const response = await Task.findOne({ _id: req?.params?.id })
+		if (!response) throw new Error('No entry found')
+
+		return res.status(200).json(response)
 	} catch (error) {
-		res.status(400).json({ error: 'Bad request' })
+		const errMsg = error?.message || 'error'
+		res.status(404).json({ message: errMsg })
 	}
 }
 
@@ -39,32 +35,41 @@ const postFn = async (req, res) => {
 	//  [ IMPROVEMENT ]
 	// we need a zod schema validation mechanism here, before it hits the DB
 	try {
+		if (!title && !description)
+			throw new Error('title and description are required!')
 		const response = await Task.create({ title, description })
 		return res.status(201).json(response)
-	} catch (err) {
-		res.status(400).json({ error: err.message })
-		console.log(err)
+	} catch (error) {
+		const errMsg = error?.message || 'Validation failed'
+		res.status(400).json({ message: errMsg })
 	}
 }
 
 // PATCH
 const patchFn = async (req, res) => {
-	const payload = { ...req.body }
 	const id = req.params.id
 	try {
 		// first check if the resource exists
-		const exists = await Task.exists({ _id: id })
-		if (!exists) throw new Error('Task is not present')
+		let doc = await Task.findById(id)
+		if (!doc) throw new Error('Nonexistent resource. Check request id')
 
 		// else perform the update
-		const response = await Task.updateOne({ _id: id }, payload)
-		return res.json(response)
-	} catch (err) {
-		res.status(400).json({ error: err.message })
+		const { title, description } = req.body
+		if (!title && !description)
+			throw new Error('Title and description are required')
+
+		// A proper patch - patch only the fields that've changed (unsure how this scales)
+		doc.title = title || doc.title
+		doc.description = description || doc.description
+		await doc.save()
+		res.status(200).json(doc)
+	} catch (error) {
+		const errMsg = error?.message || 'Patch failed'
+		res.status(400).json({ message: errMsg })
 	}
 }
 
-// PATCH
+// DELETE
 const deleteFn = async (req, res) => {
 	const id = req.params.id
 	try {
@@ -73,11 +78,12 @@ const deleteFn = async (req, res) => {
 		if (!exists) throw new Error('Task is not present')
 
 		// else perform delete
-		const response = await Task.deleteOne({ _id: id })
-		return res.json(response)
-	} catch (err) {
-		res.status(500).json({ error: err.message })
+		const response = await Task.findByIdAndDelete(id)
+		res.status(204).json()
+	} catch (error) {
+		const errMsg = error?.message || 'Deletion failed'
+		res.status(400).json({ message: errMsg })
 	}
 }
 
-module.exports = { postFn, getAllFn, findNextId, getOneFn, patchFn, deleteFn }
+module.exports = { postFn, getAllFn, getOneFn, patchFn, deleteFn }

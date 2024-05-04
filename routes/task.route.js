@@ -3,7 +3,6 @@ const router = express.Router()
 const {
 	postFn,
 	getAllFn,
-	findNextId,
 	getOneFn,
 	patchFn,
 	deleteFn,
@@ -12,7 +11,6 @@ const {
 // GET
 router.get('/', getAllFn)
 router.get('/:id', getOneFn)
-router.get('/next', findNextId)
 
 // POST
 router.post('/', postFn)

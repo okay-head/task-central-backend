@@ -9,7 +9,9 @@ router.get('/', (_, res) => {
 
 // NOT FOUND
 router.get('*', (_, res) => {
-	res.status(404).send({ error: '404 Not found' })
+	res
+		.status(404)
+		.send({ error: "404. The route you're looking for does not exist" })
 })
 
 module.exports = router

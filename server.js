@@ -11,28 +11,33 @@ app.use(
 		allowedHeaders: ['Content-Type'],
 	})
 )
-
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // -- routes --
 const tasks = require('./routes/task.route.js')
 const home = require('./routes/home.route.js')
+const auth = require('./routes/auth.route.js')
 app.use('/tasks', tasks)
+app.use('/auth', auth)
 app.use('/', home)
 
 // -- connect to MONGO --
 const mongoose = require('mongoose')
+const { clearServerSessions } = require('./utils/manageSessions.js')
 
 mongoose
 	.connect(process.env.CONNECTION_STRING)
 	.then(() => {
-		console.log('Connected to mongoDB! 💾\n')
+		console.log('Connected to mongoDB! 💾')
 
 		// the server starts on an endpoint, iff connection to db is successful
 		const port = process.env.PORT
 		app.listen(port, () => {
-			console.log('server running at port: ' + port)
+			console.log('server running at port: ' + port + '\n')
+			clearServerSessions()
 		})
 	})
 	.catch((err) =>

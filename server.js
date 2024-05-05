@@ -26,7 +26,7 @@ app.use('/tasks', checkLoginSession, tasks) // 🔒
 app.use('/auth', auth)
 app.use('/', home)
 
-// -- connect to MONGO --
+// -- connect to mongodb --
 const mongoose = require('mongoose')
 mongoose
 	.connect(process.env.CONNECTION_STRING)

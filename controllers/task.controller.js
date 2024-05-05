@@ -9,10 +9,9 @@ const Task = require('../models/task.model')
 // get all entries by user
 const getAllFn = async (req, res) => {
 	try {
-		// const user = req.auth.user
-		// const response = await Task.find({ _id: user }).sort({ createdAt: -1 })
-		const response = await Task.find().sort({ createdAt: -1 })
-		res.status(200).json({ fucker: req.uid })
+		const uid = req.uid
+		const response = await Task.find({ user_id: uid }).sort({ updatedAt: -1 })
+		res.status(200).json(response)
 	} catch (error) {
 		const errMsg = error?.message || 'error'
 		res.status(404).json({ message: errMsg })
@@ -24,7 +23,7 @@ const getOneFn = async (req, res) => {
 		const response = await Task.findOne({ _id: req?.params?.id })
 		if (!response) throw new Error('No entry found')
 
-		return res.status(200).json(response)
+		res.status(200).json(response)
 	} catch (error) {
 		const errMsg = error?.message || 'error'
 		res.status(404).json({ message: errMsg })
@@ -37,10 +36,10 @@ const postFn = async (req, res) => {
 	//  [ IMPROVEMENT ]
 	// we need a zod schema validation mechanism here, before it hits the DB
 	try {
-		if (!title && !description)
-			throw new Error('title and description are required!')
-		const response = await Task.create({ title, description })
-		return res.status(201).json(response)
+		if (!title || !description)
+			throw new Error('Request body has insufficient fields')
+		const response = await Task.create({ title, description, user_id: req.uid })
+		res.status(201).json(response)
 	} catch (error) {
 		const errMsg = error?.message || 'Validation failed'
 		res.status(400).json({ message: errMsg })
@@ -54,6 +53,13 @@ const patchFn = async (req, res) => {
 		// first check if the resource exists
 		let doc = await Task.findById(id)
 		if (!doc) throw new Error('Nonexistent resource. Check request id')
+
+		// then check if the current user is the owner (🧊 edge case)
+		if (req.uid.toString() !== doc.user_id.toString()) {
+			return res.status(403).json({
+				message: 'You do not have permissions to modify this document',
+			})
+		}
 
 		// else perform the update
 		const { title, description } = req.body
@@ -76,12 +82,19 @@ const deleteFn = async (req, res) => {
 	const id = req.params.id
 	try {
 		// first check if the resource exists
-		const exists = await Task.exists({ _id: id })
-		if (!exists) throw new Error('Task is not present')
+		let doc = await Task.findById(id)
+		if (!doc) throw new Error('Task is not present')
+
+		// then check if the current user is the owner (🧊 edge case)
+		if (req.uid.toString() !== doc.user_id.toString()) {
+			return res.status(403).json({
+				message: 'You do not have permissions to modify this document',
+			})
+		}
 
 		// else perform delete
-		const response = await Task.findByIdAndDelete(id)
-		res.status(204).json()
+		await Task.findByIdAndDelete(id)
+		return res.status(204).json()
 	} catch (error) {
 		const errMsg = error?.message || 'Deletion failed'
 		res.status(400).json({ message: errMsg })

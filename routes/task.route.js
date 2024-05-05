@@ -13,7 +13,7 @@ router.get('/', getAllFn) // instead of getAll, you now get all by current user
 router.get('/:id', getOneFn)
 
 // POST
-router.post('/', postFn) // modify
+router.post('/', postFn)
 
 // PATCH
 router.patch('/:id', patchFn)

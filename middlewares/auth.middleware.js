@@ -1,5 +1,3 @@
-// const { checkCookieTokenMatches } = require('../util/manageSessions')
-
 const { findSession } = require('../utils/manageSessions')
 
 // middleware for login
@@ -30,5 +28,4 @@ const checkLoginSession = (req, res, next) => {
 	}
 }
 
-// TODO: Set req.user.  See images
 module.exports = { checkLoginSession }

@@ -6,15 +6,15 @@ const {
 	findSession,
 } = require('../utils/manageSessions')
 
-const getUsers = async (req, res) => {
-	try {
-		const response = await User.find().sort({ createdAt: -1 })
-		res.status(200).json(response)
-	} catch (error) {
-		const errMsg = error?.message || 'Logout failed'
-		res.status(400).json({ message: errMsg })
-	}
-}
+// const getUsers = async (req, res) => {
+// 	try {
+// 		const response = await User.find().sort({ createdAt: -1 })
+// 		res.status(200).json(response)
+// 	} catch (error) {
+// 		const errMsg = error?.message || 'Logout failed'
+// 		res.status(400).json({ message: errMsg })
+// 	}
+// }
 
 const signup = async (req, res) => {
 	// create a user
@@ -107,4 +107,4 @@ const logout = async (req, res) => {
 	}
 }
 
-module.exports = { logout, signin, signup, getUsers }
+module.exports = { logout, signin, signup }

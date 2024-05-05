@@ -1,20 +1,21 @@
 const express = require('express')
-const { signup, signin, logout } = require('../controllers/auth.controller')
+const {
+	signup,
+	signin,
+	logout,
+	getUsers,
+} = require('../controllers/auth.controller')
 const { getSessions } = require('../utils/manageSessions')
 
 const router = express.Router()
 
-router.get('/home', (req, res) => {
-	console.log(req.auth)
-	res
-		.status(200)
-		.json({ message: 'Protected route. Also temporary', more: req?.auth?.user })
-})
-
+// temporary route
 router.get('/sessions', (_, res) => {
 	const sessions = getSessions()
 	res.status(200).json({ sessions })
 })
+// temporary route
+router.get('/users', getUsers)
 
 // public routes
 router.post('/signup', signup)

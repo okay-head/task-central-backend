@@ -9,8 +9,7 @@ const getSessions = () => sessions
 
 const findSession = (session_id) => {
 	const found = sessions.find((x) => x.session_id === session_id)
-	if (found != undefined) return true
-	return false
+	return found
 }
 
 // logout

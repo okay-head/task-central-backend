@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 require('dotenv').config()
 const cors = require('cors')
+const { clearServerSessions } = require('./utils/manageSessions.js')
+const { checkLoginSession } = require('./middlewares/auth.middleware.js')
 
 app.use(
 	cors({
@@ -18,16 +20,14 @@ app.use(express.urlencoded({ extended: true }))
 
 // -- routes --
 const tasks = require('./routes/task.route.js')
-const home = require('./routes/home.route.js')
 const auth = require('./routes/auth.route.js')
-app.use('/tasks', tasks)
+const home = require('./routes/home.route.js')
+app.use('/tasks', checkLoginSession, tasks) // 🔒
 app.use('/auth', auth)
 app.use('/', home)
 
 // -- connect to MONGO --
 const mongoose = require('mongoose')
-const { clearServerSessions } = require('./utils/manageSessions.js')
-
 mongoose
 	.connect(process.env.CONNECTION_STRING)
 	.then(() => {
@@ -37,7 +37,7 @@ mongoose
 		const port = process.env.PORT
 		app.listen(port, () => {
 			console.log('server running at port: ' + port + '\n')
-			clearServerSessions()
+			clearServerSessions() // periodically clear sessions after 24 hours
 		})
 	})
 	.catch((err) =>

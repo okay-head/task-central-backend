@@ -6,13 +6,23 @@ const {
 	findSession,
 } = require('../utils/manageSessions')
 
+const getUsers = async (req, res) => {
+	try {
+		const response = await User.find().sort({ createdAt: -1 })
+		res.status(200).json(response)
+	} catch (error) {
+		const errMsg = error?.message || 'Logout failed'
+		res.status(400).json({ message: errMsg })
+	}
+}
+
 const signup = async (req, res) => {
 	// create a user
 	const { username, email, password } = req.body
 	try {
 		if (!username || !email || !password)
 			throw new Error('Request body has insufficient fields')
-		const response = await User.create({
+		const doc = await User.create({
 			username,
 			email,
 			password: password && crypto.hash('sha256', password.toString()),
@@ -27,9 +37,9 @@ const signup = async (req, res) => {
 			maxAge: 86400000,
 			httpOnly: true,
 		})
-		addSession(session_id, response._id)
+		addSession(session_id, doc._id)
 
-		res.status(200).json(response)
+		res.status(200).json(doc)
 	} catch (error) {
 		const errMsg = error?.message || 'Signup failed'
 		res.status(400).json({ message: errMsg })
@@ -37,17 +47,48 @@ const signup = async (req, res) => {
 }
 
 const signin = async (req, res) => {
-	const { session, user } = req.body
-	// mock code remove later
-	addSession(session, user)
-	res.status(200).json({ message: 'handle signin' })
+	const { email, password } = req.body
+	try {
+		if (!email || !password)
+			throw new Error('Request body has insufficient fields')
+
+		// first check if email exists
+		let doc = await User.findOne({
+			email: email,
+		})
+		if (!doc) throw new Error('User not found')
+
+		// then check if pass is correct
+		doc = await User.findOne({
+			email: email,
+			password: password && crypto.hash('sha256', password),
+		})
+		if (!doc) throw new Error('Incorrect login credentials!')
+
+		// finally login and create a session
+		const session_id = crypto.randomUUID()
+		res.cookie('session_id', session_id.toString(), {
+			maxAge: 86400000,
+			httpOnly: true,
+		})
+		addSession(session_id, doc._id)
+
+		res.status(200).json(doc)
+	} catch (error) {
+		const errMsg = error?.message || 'Signin failed'
+		res.status(400).json({ message: errMsg })
+	}
 }
 
 const logout = async (req, res) => {
 	try {
 		const cookie = req.cookies
-		if (!cookie || Object.keys(cookie).length == 0)
-			// no cookies
+		// if no cookies are present or if the cookie set is not a session id
+		if (
+			!cookie ||
+			Object.keys(cookie).length == 0 ||
+			Object.keys(cookie)[0] !== 'session_id'
+		)
 			throw new Error('You must login first!')
 
 		if (!findSession(cookie.session_id)) {
@@ -66,4 +107,4 @@ const logout = async (req, res) => {
 	}
 }
 
-module.exports = { logout, signin, signup }
+module.exports = { logout, signin, signup, getUsers }

@@ -6,11 +6,13 @@ const Task = require('../models/task.model')
  */
 
 // GET
-
-const getAllFn = async (_, res) => {
+// get all entries by user
+const getAllFn = async (req, res) => {
 	try {
+		// const user = req.auth.user
+		// const response = await Task.find({ _id: user }).sort({ createdAt: -1 })
 		const response = await Task.find().sort({ createdAt: -1 })
-		res.status(200).json(response)
+		res.status(200).json({ fucker: req.uid })
 	} catch (error) {
 		const errMsg = error?.message || 'error'
 		res.status(404).json({ message: errMsg })

@@ -9,11 +9,11 @@ const {
 } = require('../controllers/task.controller')
 
 // GET
-router.get('/', getAllFn)
+router.get('/', getAllFn) // instead of getAll, you now get all by current user
 router.get('/:id', getOneFn)
 
 // POST
-router.post('/', postFn)
+router.post('/', postFn) // modify
 
 // PATCH
 router.patch('/:id', patchFn)

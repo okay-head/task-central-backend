@@ -1,4 +1,4 @@
-const Task = require('../model/task.model')
+const Task = require('../models/task.model')
 /* 
   countDocuments() not working
   mongoose.Types.ObjectId.isValid(id)

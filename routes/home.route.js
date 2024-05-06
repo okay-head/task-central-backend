@@ -4,7 +4,8 @@ const router = express.Router()
 
 // Home route
 router.get('/', (_, res) => {
-	res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
+	res.status(200).json({ ping: true })
+	// res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
 })
 
 // NOT FOUND

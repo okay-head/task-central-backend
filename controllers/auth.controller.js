@@ -1,5 +1,5 @@
 const User = require('../models/user.model')
-const crypto = require('crypto')
+const { sha256 } = require('crypto-hash')
 const {
 	addSession,
 	removeSession,
@@ -25,7 +25,7 @@ const signup = async (req, res) => {
 		const doc = await User.create({
 			username,
 			email,
-			password: password && crypto.hash('sha256', password.toString()),
+			password: password && sha256(password),
 		})
 
 		// a middleware will grab the sess id from cookie, find user id, then map it to req.auth.id
@@ -63,7 +63,7 @@ const signin = async (req, res) => {
 		// then check if pass is correct
 		doc = await User.findOne({
 			email: email,
-			password: password && crypto.hash('sha256', password),
+			password: password && sha256(password),
 		})
 		if (!doc) throw new Error('Incorrect login credentials!')
 

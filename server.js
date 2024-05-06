@@ -7,10 +7,10 @@ const { checkLoginSession } = require('./middlewares/auth.middleware.js')
 
 app.use(
 	cors({
-		// origin: ['http://localhost:5173/', 'https://taskcentral.netlify.app/'],
-		origin: '*',
+		origin: 'https://taskcentral.netlify.app',
 		methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 		allowedHeaders: ['Content-Type'],
+		credentials: true,
 	})
 )
 const cookieParser = require('cookie-parser')

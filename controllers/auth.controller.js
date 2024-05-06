@@ -37,7 +37,8 @@ const signup = async (req, res) => {
 			maxAge: 86400000,
 			httpOnly: true,
 			secure: true,
-			sameSite: 'strict',
+			sameSite: 'none',
+			// sameSite: 'strict',
 		})
 		addSession(session_id, doc._id)
 
@@ -73,7 +74,8 @@ const signin = async (req, res) => {
 			maxAge: 86400000,
 			httpOnly: true,
 			secure: true,
-			sameSite: 'strict',
+			sameSite: 'none',
+			// sameSite: 'strict',
 		})
 		addSession(session_id, doc._id)
 

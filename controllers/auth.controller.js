@@ -36,6 +36,8 @@ const signup = async (req, res) => {
 		res.cookie('session_id', session_id.toString(), {
 			maxAge: 86400000,
 			httpOnly: true,
+			secure: true,
+			sameSite: 'strict',
 		})
 		addSession(session_id, doc._id)
 
@@ -70,6 +72,8 @@ const signin = async (req, res) => {
 		res.cookie('session_id', session_id.toString(), {
 			maxAge: 86400000,
 			httpOnly: true,
+			secure: true,
+			sameSite: 'strict',
 		})
 		addSession(session_id, doc._id)
 
@@ -92,14 +96,24 @@ const logout = async (req, res) => {
 			throw new Error('You must login first!')
 
 		if (!findSession(cookie.session_id)) {
-			// cookie present but not session
-			res.cookie('session_id', false, { maxAge: 0 })
-			throw new Error("Session timed out! You've been logged out")
+			// cookie present but not session; invalidate user cookie
+			res.cookie('session_id', false, {
+				maxAge: 0,
+				httpOnly: true,
+				secure: true,
+				sameSite: 'none',
+			})
+			throw new Error("Session timed out!\nYou've been logged out")
 		}
 
 		// if all goes well, logout user
 		removeSession(cookie.session_id) // remove from server memory
-		res.cookie('session_id', false, { maxAge: 0 }) // invalidate user cookie
+		res.cookie('session_id', false, {
+			maxAge: 0,
+			httpOnly: true,
+			secure: true,
+			sameSite: 'none',
+		}) // invalidate user cookie
 		res.status(200).json({ message: 'Logged out' })
 	} catch (error) {
 		const errMsg = error?.message || 'Logout failed'

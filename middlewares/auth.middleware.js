@@ -13,9 +13,14 @@ const checkLoginSession = (req, res, next) => {
 			throw new Error('You must login first!')
 
 		if (!findSession(cookie.session_id)) {
-			// cookie present but not session
-			res.cookie('session_id', false, { maxAge: 0 })
-			throw new Error("Session timed out! You've been logged out")
+			// cookie present but not session; invalidate user cookie
+			res.cookie('session_id', false, {
+				maxAge: 0,
+				httpOnly: true,
+				secure: true,
+				sameSite: 'none',
+			})
+			throw new Error("Session timed out!\nYou've been logged out")
 		}
 
 		// if all goes well, set request auth

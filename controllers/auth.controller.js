@@ -38,6 +38,7 @@ const signup = async (req, res) => {
 			httpOnly: true,
 			secure: true,
 			sameSite: 'none',
+			partitioned: true,
 			// sameSite: 'strict',
 		})
 		addSession(session_id, doc._id)
@@ -75,6 +76,7 @@ const signin = async (req, res) => {
 			httpOnly: true,
 			secure: true,
 			sameSite: 'none',
+			partitioned: true,
 			// sameSite: 'strict',
 		})
 		addSession(session_id, doc._id)

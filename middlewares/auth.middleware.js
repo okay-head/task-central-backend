@@ -19,6 +19,7 @@ const checkLoginSession = (req, res, next) => {
 				httpOnly: true,
 				secure: true,
 				sameSite: 'none',
+				partitioned: true,
 			})
 			throw new Error("Session timed out!\nYou've been logged out")
 		}

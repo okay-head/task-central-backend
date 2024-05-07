@@ -1,3 +1,4 @@
+const cookie = require('cookie')
 const User = require('../models/user.model')
 const { createHash } = require('../utils/createHash')
 const {
@@ -33,14 +34,25 @@ const signup = async (req, res) => {
 
 		// Now you have the entire user object, take the id and link it to session
 		const session_id = crypto.randomUUID()
-		res.cookie('session_id', session_id.toString(), {
-			maxAge: 86400000,
-			httpOnly: true,
-			secure: true,
-			sameSite: 'none',
-			partitioned: true,
-			// sameSite: 'strict',
-		})
+		res.setHeader(
+			'Set-Cookie',
+			cookie.serialize('session_id', String(session_id), {
+				path: '/',
+				httpOnly: true,
+				maxAge: 86400,
+				secure: true,
+				sameSite: 'none',
+				partitioned: true,
+			})
+		)
+
+		// res.cookie('session_id', session_id.toString(), {
+		// 	maxAge: 86400000,
+		// 	httpOnly: true,
+		// 	secure: true,
+		// 	sameSite: 'none',
+		// 	partitioned: true,
+		// })
 		addSession(session_id, doc._id)
 
 		res.status(200).json(doc)
@@ -71,14 +83,24 @@ const signin = async (req, res) => {
 
 		// finally login and create a session
 		const session_id = crypto.randomUUID()
-		res.cookie('session_id', session_id.toString(), {
-			maxAge: 86400000,
-			httpOnly: true,
-			secure: true,
-			sameSite: 'none',
-			partitioned: true,
-			// sameSite: 'strict',
-		})
+		res.setHeader(
+			'Set-Cookie',
+			cookie.serialize('session_id', String(session_id), {
+				path: '/',
+				httpOnly: true,
+				maxAge: 86400,
+				secure: true,
+				sameSite: 'none',
+				partitioned: true,
+			})
+		)
+		// res.cookie('session_id', session_id.toString(), {
+		// 	maxAge: 86400000,
+		// 	httpOnly: true,
+		// 	secure: true,
+		// 	sameSite: 'none',
+		// 	partitioned: true,
+		// })
 		addSession(session_id, doc._id)
 
 		res.status(200).json(doc)

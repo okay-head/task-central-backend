@@ -1,3 +1,4 @@
+const cookie = require('cookie')
 const { findSession } = require('../utils/manageSessions')
 
 // middleware for login
@@ -14,13 +15,24 @@ const checkLoginSession = (req, res, next) => {
 
 		if (!findSession(cookie.session_id)) {
 			// cookie present but not session; invalidate user cookie
-			res.cookie('session_id', false, {
-				maxAge: 0,
-				httpOnly: true,
-				secure: true,
-				sameSite: 'none',
-				partitioned: true,
-			})
+			res.setHeader(
+				'Set-Cookie',
+				cookie.serialize('session_id', false, {
+					path: '/',
+					httpOnly: true,
+					maxAge: 0,
+					secure: true,
+					sameSite: 'none',
+					partitioned: true,
+				})
+			)
+			// res.cookie('session_id', false, {
+			// 	maxAge: 0,
+			// 	httpOnly: true,
+			// 	secure: true,
+			// 	sameSite: 'none',
+			// 	partitioned: true,
+			// })
 			throw new Error("Session timed out!\nYou've been logged out")
 		}
 

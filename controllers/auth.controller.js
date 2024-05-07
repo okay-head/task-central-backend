@@ -123,23 +123,47 @@ const logout = async (req, res) => {
 
 		if (!findSession(cookie.session_id)) {
 			// cookie present but not session; invalidate user cookie
-			res.cookie('session_id', false, {
-				maxAge: 0,
-				httpOnly: true,
-				secure: true,
-				sameSite: 'none',
-			})
+			res.setHeader(
+				'Set-Cookie',
+				cookie.serialize('session_id', false, {
+					path: '/',
+					httpOnly: true,
+					maxAge: 0,
+					secure: true,
+					sameSite: 'none',
+					partitioned: true,
+				})
+			)
+			// res.cookie('session_id', false, {
+			// 	maxAge: 0,
+			// 	httpOnly: true,
+			// 	secure: true,
+			// 	sameSite: 'none',
+			// })
 			throw new Error("Session timed out!\nYou've been logged out")
 		}
 
 		// if all goes well, logout user
 		removeSession(cookie.session_id) // remove from server memory
-		res.cookie('session_id', false, {
-			maxAge: 0,
-			httpOnly: true,
-			secure: true,
-			sameSite: 'none',
-		}) // invalidate user cookie
+		res.setHeader(
+			'Set-Cookie',
+			cookie.serialize('session_id', false, {
+				path: '/',
+				httpOnly: true,
+				maxAge: 0,
+				secure: true,
+				sameSite: 'none',
+				partitioned: true,
+			})
+		) // invalidate user cookie
+
+		// res.cookie('session_id', false, {
+		// 	maxAge: 0,
+		// 	httpOnly: true,
+		// 	secure: true,
+		// 	sameSite: 'none',
+		// })
+
 		res.status(200).json({ message: 'Logged out' })
 	} catch (error) {
 		const errMsg = error?.message || 'Logout failed'

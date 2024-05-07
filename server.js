@@ -9,7 +9,7 @@ app.use(
 	cors({
 		origin: 'https://taskcentral.netlify.app',
 		methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-		allowedHeaders: ['Content-Type'],
+		allowedHeaders: ['Origin', 'Content-Type', 'Accept'],
 		credentials: true,
 	})
 )

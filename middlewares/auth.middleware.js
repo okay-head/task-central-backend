@@ -4,16 +4,16 @@ const { findSession } = require('../utils/manageSessions')
 // middleware for login
 const checkLoginSession = (req, res, next) => {
 	try {
-		const cookie = req.cookies
+		const userCookie = req.cookies
 		// if no cookies are present or if the cookie set is not a session id
 		if (
-			!cookie ||
-			Object.keys(cookie).length == 0 ||
-			Object.keys(cookie)[0] !== 'session_id'
+			!userCookie ||
+			Object.keys(userCookie).length == 0 ||
+			Object.keys(userCookie)[0] !== 'session_id'
 		)
 			throw new Error('You must login first!')
 
-		if (!findSession(cookie.session_id)) {
+		if (!findSession(userCookie.session_id)) {
 			// cookie present but not session; invalidate user cookie
 			res.setHeader(
 				'Set-Cookie',
@@ -37,7 +37,7 @@ const checkLoginSession = (req, res, next) => {
 		}
 
 		// if all goes well, set request auth
-		const { user_id } = findSession(cookie.session_id)
+		const { user_id } = findSession(userCookie.session_id)
 		req.uid = user_id
 		next()
 	} catch (error) {

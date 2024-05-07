@@ -112,16 +112,16 @@ const signin = async (req, res) => {
 
 const logout = async (req, res) => {
 	try {
-		const cookie = req.cookies
+		const userCookie = req.cookies
 		// if no cookies are present or if the cookie set is not a session id
 		if (
-			!cookie ||
-			Object.keys(cookie).length == 0 ||
-			Object.keys(cookie)[0] !== 'session_id'
+			!userCookie ||
+			Object.keys(userCookie).length == 0 ||
+			Object.keys(userCookie)[0] !== 'session_id'
 		)
 			throw new Error('You must login first!')
 
-		if (!findSession(cookie.session_id)) {
+		if (!findSession(userCookie.session_id)) {
 			// cookie present but not session; invalidate user cookie
 			res.setHeader(
 				'Set-Cookie',
@@ -144,7 +144,7 @@ const logout = async (req, res) => {
 		}
 
 		// if all goes well, logout user
-		removeSession(cookie.session_id) // remove from server memory
+		removeSession(userCookie.session_id) // remove from server memory
 		res.setHeader(
 			'Set-Cookie',
 			cookie.serialize('session_id', false, {

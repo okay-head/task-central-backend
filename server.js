@@ -13,6 +13,8 @@ app.use(
 		credentials: true,
 	})
 )
+const csrf = require('./middlewares/csrf.middleware.js')
+app.use(csrf)
 const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 app.use(express.json())

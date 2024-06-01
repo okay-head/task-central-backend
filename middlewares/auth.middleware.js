@@ -26,13 +26,6 @@ const checkLoginSession = (req, res, next) => {
 					partitioned: true,
 				})
 			)
-			// res.cookie('session_id', false, {
-			// 	maxAge: 0,
-			// 	httpOnly: true,
-			// 	secure: true,
-			// 	sameSite: 'none',
-			// 	partitioned: true,
-			// })
 			throw new Error("Session timed out!\nYou've been logged out")
 		}
 

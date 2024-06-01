@@ -46,13 +46,6 @@ const signup = async (req, res) => {
 			})
 		)
 
-		// res.cookie('session_id', session_id.toString(), {
-		// 	maxAge: 86400000,
-		// 	httpOnly: true,
-		// 	secure: true,
-		// 	sameSite: 'none',
-		// 	partitioned: true,
-		// })
 		addSession(session_id, doc._id)
 
 		res.status(200).json(doc)
@@ -94,13 +87,6 @@ const signin = async (req, res) => {
 				partitioned: true,
 			})
 		)
-		// res.cookie('session_id', session_id.toString(), {
-		// 	maxAge: 86400000,
-		// 	httpOnly: true,
-		// 	secure: true,
-		// 	sameSite: 'none',
-		// 	partitioned: true,
-		// })
 		addSession(session_id, doc._id)
 
 		res.status(200).json(doc)
@@ -134,12 +120,6 @@ const logout = async (req, res) => {
 					partitioned: true,
 				})
 			)
-			// res.cookie('session_id', false, {
-			// 	maxAge: 0,
-			// 	httpOnly: true,
-			// 	secure: true,
-			// 	sameSite: 'none',
-			// })
 			throw new Error("Session timed out!\nYou've been logged out")
 		}
 
@@ -156,13 +136,6 @@ const logout = async (req, res) => {
 				partitioned: true,
 			})
 		) // invalidate user cookie
-
-		// res.cookie('session_id', false, {
-		// 	maxAge: 0,
-		// 	httpOnly: true,
-		// 	secure: true,
-		// 	sameSite: 'none',
-		// })
 
 		res.status(200).json({ message: 'Logged out' })
 	} catch (error) {

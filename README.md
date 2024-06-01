@@ -2,7 +2,7 @@ Node and express backend for the taskcentral app
 
 Hosted on Render aka 50 seconds cold start bummer
 
-<a href='https://task-central-backend.onrender.com/'>Ping here while you read readme</a>
+<a href='https://task-central-backend.onrender.com/'>Ping here while you read readme (ctrl + click)</a>
 
 ### Routes roundup
 
